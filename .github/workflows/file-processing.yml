@@ -18,22 +18,10 @@ jobs:
       - name: Test it
         working-directory: file-processing
         run: |
-          ls
-
           echo "---- Before"
           cat wrangler.toml
 
-          echo "---- Target content"
-          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/'
-
-          echo "---- Trying to create intermediate"
-          cat wrangler.toml | sed 's/main = "build/main = "result/' > mid.toml
-          cat mid.toml
-
-          echo "---- Complete with intermediate"
-          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/' > wrangler.prod.toml
-          cat wrangler.prod.toml
-          mv wrangler.prod.toml wrangler.toml
+          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/' >| wrangler.toml
 
           echo "---- After"
           cat wrangler.toml
