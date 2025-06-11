@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare
+name: File processing test
 
 on:
   workflow_dispatch:
@@ -20,18 +20,20 @@ jobs:
         run: |
           ls
 
-          echo "-- Before"
+          echo "---- Before"
           cat wrangler.toml
 
-          echo "-- Target content"
+          echo "---- Target content"
           cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/'
 
-          echo "-- Trying to create intermediate"
+          echo "---- Trying to create intermediate"
           cat wrangler.toml | sed 's/main = "build/main = "result/' > mid.toml
           cat mid.toml
 
-          echo "-- Final thing"
-          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/' > wrangler.toml
+          echo "---- Complete with intermediate"
+          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/' > wrangler.prod.toml
+          cat wrangler.prod.toml
+          mv wrangler.prod.toml wrangler.toml
 
-          echo "After"
+          echo "---- After"
           cat wrangler.toml
