@@ -1,0 +1,37 @@
+name: Deploy to Cloudflare
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/file-processing.yml"
+      - "file-processing/"
+
+jobs:
+  test-it:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test it
+        working-directory: file-processing
+        run: |
+          ls
+
+          echo "-- Before"
+          cat wrangler.toml
+
+          echo "-- Target content"
+          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/'
+
+          echo "-- Trying to create intermediate"
+          cat wrangler.toml | sed 's/main = "build/main = "result/' > mid.toml
+          cat mid.toml
+
+          echo "-- Final thing"
+          cat wrangler.toml | sed 's/main = "build/main = "result/' | sed 's/command = "worker-build --release"/command = "echo dummy build"/' > wrangler.toml
+
+          echo "After"
+          cat wrangler.toml
